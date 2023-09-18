@@ -105,6 +105,15 @@ describe('CreateArmorerController', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
   })
+  
+  it('should call EmailValidator with correct value', () => {
+    const { sut, emailValidator } = makeSut()
+    vi.spyOn(emailValidator, 'isValid')
+    const httpRequest = makeHttpRequest()
+    sut.handle(httpRequest)
+    expect(emailValidator.isValid).toHaveBeenCalledOnce()
+    expect(emailValidator.isValid).toHaveBeenCalledWith(httpRequest.body.email)
+  })
 
   it('should return 200 if all data is valid', () => {
     const { sut } = makeSut()
