@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { CreateArmorerController } from './create-armorer-controller'
-import { MissingParamError } from '../errors/missing-params-error'
+import { MissingParamError } from '../errors'
 import { HttpRequest } from '../protocols/http'
 import { InvalidParamError } from '../errors/invalid-params-error'
 import { EmailValidator } from '../protocols/email-validator'

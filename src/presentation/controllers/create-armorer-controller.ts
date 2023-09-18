@@ -1,10 +1,8 @@
-import { InvalidParamError } from '../errors/invalid-params-error'
-import { MissingParamError } from '../errors/missing-params-error'
+import { InvalidParamError, ServerError, MissingParamError } from '../errors'
 import { badRequest, serverError, ok } from '../helpers/http-helper'
 import { Controller } from '../protocols/controller'
 import { EmailValidator } from '../protocols/email-validator'
 import { HttpRequest, HttpResponse } from '../protocols/http'
-import { ServerError } from '../errors/server-error'
 
 export class CreateArmorerController implements Controller {
   constructor(private readonly emailValidator: EmailValidator) {}
