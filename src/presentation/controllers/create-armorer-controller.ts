@@ -30,5 +30,10 @@ export class CreateArmorerController implements Controller {
     if(!this.emailValidator.isValid(httpRequest.body.email)){
       return badRequest(new InvalidParamError('email'))
     }
+
+    return {
+      statusCode: 200,
+      body: {},
+    }
   }
 }
