@@ -94,7 +94,7 @@ describe('CreateArmorerController', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(
-      new Error('Password and password confirmation must be equal')
+      new InvalidParamError('passwordConfirmation')
     )
   })
 

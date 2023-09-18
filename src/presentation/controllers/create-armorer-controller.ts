@@ -21,7 +21,7 @@ export class CreateArmorerController implements Controller {
     }
     if (password !== passwordConfirmation) {
       return badRequest(
-        new Error('Password and password confirmation must be equal')
+        new InvalidParamError('passwordConfirmation')
       )
     }
     try {
