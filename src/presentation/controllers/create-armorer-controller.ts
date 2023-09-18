@@ -1,6 +1,6 @@
 import { InvalidParamError } from '../errors/invalid-params-error'
 import { MissingParamError } from '../errors/missing-params-error'
-import { badRequest, internalServerError, ok } from '../helpers/http-helper'
+import { badRequest, serverError, ok } from '../helpers/http-helper'
 import { Controller } from '../protocols/controller'
 import { EmailValidator } from '../protocols/email-validator'
 import { HttpRequest, HttpResponse } from '../protocols/http'
@@ -34,7 +34,7 @@ export class CreateArmorerController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
     } catch (error) {
-      return internalServerError(new ServerError())
+      return serverError(new ServerError())
     }
     return ok()
   }
