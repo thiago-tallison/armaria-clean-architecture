@@ -1,10 +1,15 @@
 export class CreateArmorerController {
   handle(httpRequest: any): any {
-    console.log(httpRequest)
+    if(!httpRequest.body.name) {
+      return {
+        statusCode: 400,
+        body: new Error('Missing param: name')
+      }
+    }
     
     return {
       statusCode: 400,
-      body: new Error('Missing param: name')
+      body: new Error('Missing param: email')
     }
   }
 }
