@@ -4,6 +4,7 @@ import { MissingParamError } from '../errors/missing-params-error'
 import { HttpRequest } from '../protocols/http'
 import { InvalidParamError } from '../errors/invalid-params-error'
 import { EmailValidator } from '../protocols/email-validator'
+import { ServerError } from '../errors/server-error'
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -97,22 +98,33 @@ describe('CreateArmorerController', () => {
   })
 
   it('should return 400 if email is not valid', () => {
-    const { sut, emailValidatorStub: emailValidator } = makeSut()
+    const { sut, emailValidatorStub } = makeSut()
     const httpRequest = makeHttpRequest()
     httpRequest.body.email = 'invalid-email'
-    vi.spyOn(emailValidator, 'isValid').mockReturnValueOnce(false)
+    vi.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
   })
   
   it('should call EmailValidator with correct value', () => {
-    const { sut, emailValidatorStub: emailValidator } = makeSut()
-    const isValid = vi.spyOn(emailValidator, 'isValid')
+    const { sut, emailValidatorStub } = makeSut()
+    const isValid = vi.spyOn(emailValidatorStub, 'isValid')
     const httpRequest = makeHttpRequest()
     sut.handle(httpRequest)
     expect(isValid).toHaveBeenCalledOnce()
     expect(isValid).toHaveBeenCalledWith(httpRequest.body.email)
+  })
+  
+  it('should return 500 if EmailValidator throws', () => {
+    const { sut, emailValidatorStub } = makeSut()
+    vi.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpRequest = makeHttpRequest()
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   it('should return 200 if all data is valid', () => {
