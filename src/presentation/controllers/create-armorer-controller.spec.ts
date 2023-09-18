@@ -18,7 +18,7 @@ const makeHttpRequest = (): HttpRequest => ({
 
 type SutTypes = {
   sut: CreateArmorerController;
-  emailValidator: EmailValidator;
+  emailValidatorStub: EmailValidator;
 };
 
 const makeSut = (): SutTypes => {
@@ -33,7 +33,7 @@ const makeSut = (): SutTypes => {
 
   return {
     sut: new CreateArmorerController(emailValidatorStub),
-    emailValidator: emailValidatorStub,
+    emailValidatorStub: emailValidatorStub,
   }
 }
 
@@ -97,7 +97,7 @@ describe('CreateArmorerController', () => {
   })
 
   it('should return 400 if email is not valid', () => {
-    const { sut, emailValidator } = makeSut()
+    const { sut, emailValidatorStub: emailValidator } = makeSut()
     const httpRequest = makeHttpRequest()
     httpRequest.body.email = 'invalid-email'
     vi.spyOn(emailValidator, 'isValid').mockReturnValueOnce(false)
@@ -107,12 +107,12 @@ describe('CreateArmorerController', () => {
   })
   
   it('should call EmailValidator with correct value', () => {
-    const { sut, emailValidator } = makeSut()
-    vi.spyOn(emailValidator, 'isValid')
+    const { sut, emailValidatorStub: emailValidator } = makeSut()
+    const isValid = vi.spyOn(emailValidator, 'isValid')
     const httpRequest = makeHttpRequest()
     sut.handle(httpRequest)
-    expect(emailValidator.isValid).toHaveBeenCalledOnce()
-    expect(emailValidator.isValid).toHaveBeenCalledWith(httpRequest.body.email)
+    expect(isValid).toHaveBeenCalledOnce()
+    expect(isValid).toHaveBeenCalledWith(httpRequest.body.email)
   })
 
   it('should return 200 if all data is valid', () => {
