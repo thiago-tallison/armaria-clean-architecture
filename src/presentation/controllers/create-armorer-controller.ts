@@ -9,6 +9,7 @@ export class CreateArmorerController implements Controller {
   constructor(private readonly emailValidator: EmailValidator) {}
 
   handle(httpRequest: HttpRequest): HttpResponse {
+    const { password, passwordConfirmation, email } = httpRequest.body
     const requiredFields = [
       'name',
       'email',
@@ -21,12 +22,13 @@ export class CreateArmorerController implements Controller {
         return badRequest(new MissingParamError(field))
       }
     }
-    if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
+    if (password !== passwordConfirmation) {
       return badRequest(
         new Error('Password and password confirmation must be equal')
       )
     }
-    if(!this.emailValidator.isValid(httpRequest.body.email)){
+    const isValid = this.emailValidator.isValid(email)
+    if (!isValid) {
       return badRequest(new InvalidParamError('email'))
     }
     return ok()
