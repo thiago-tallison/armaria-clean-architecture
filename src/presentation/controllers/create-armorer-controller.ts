@@ -1,5 +1,5 @@
 import { InvalidParamError, ServerError, MissingParamError } from '../errors'
-import { badRequest, serverError, ok } from '../helpers/http-helper'
+import { badRequest, serverError, created } from '../helpers/http-helper'
 import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protocols'
 
 export class CreateArmorerController implements Controller {
@@ -32,6 +32,6 @@ export class CreateArmorerController implements Controller {
     } catch (error) {
       return serverError(new ServerError())
     }
-    return ok()
+    return created()
   }
 }

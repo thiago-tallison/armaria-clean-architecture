@@ -132,6 +132,6 @@ describe('CreateArmorerController', () => {
     const { sut } = makeSut()
     const httpRequest = makeHttpRequest()
     const httpResponse = sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.statusCode).toBe(201)
   })
 })

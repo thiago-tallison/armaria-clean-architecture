@@ -10,6 +10,11 @@ export const ok = (body?: any): HttpResponse => ({
   body
 })
 
+export const created = (body?: any): HttpResponse => ({
+  statusCode: 201,
+  body
+})
+
 export const serverError = (body?: any): HttpResponse => ({
   statusCode: 500,
   body
