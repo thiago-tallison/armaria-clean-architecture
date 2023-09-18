@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { CreateArmorerController } from './create-armorer-controller'
+import { MissingParamError } from '../errors/missing-params-error'
 
 describe('CreateArmorerController', () => {
   it('should return 400 if no name is provided', () => {
@@ -17,7 +18,7 @@ describe('CreateArmorerController', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: name'))
+    expect(httpResponse.body).toEqual(new MissingParamError('name'))
 
   })
 
@@ -36,7 +37,7 @@ describe('CreateArmorerController', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: email'))
+    expect(httpResponse.body).toEqual(new MissingParamError('email'))
 
   })
 
@@ -55,7 +56,7 @@ describe('CreateArmorerController', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: password'))
+    expect(httpResponse.body).toEqual(new MissingParamError('password'))
 
   })
 
@@ -74,7 +75,7 @@ describe('CreateArmorerController', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: registration'))
+    expect(httpResponse.body).toEqual(new MissingParamError('registration'))
 
   })
 })
