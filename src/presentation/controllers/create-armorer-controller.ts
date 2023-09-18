@@ -13,6 +13,13 @@ export class CreateArmorerController {
         body: new Error('Missing param: password')
       }
     }
+
+    if(!httpRequest.body.registration) {
+      return {
+        statusCode: 400,
+        body: new Error('Missing param: registration')
+      }
+    }
     
     return {
       statusCode: 400,
