@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
+    "lint:fix": "eslint --fix --ext .ts --ignore-path .gitignore .",
+    "test:staged": "vitest related --run src/**/*",
     "prepare": "husky install"
   },
   "keywords": [],
