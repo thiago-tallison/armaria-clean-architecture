@@ -16,21 +16,23 @@ const makeHttpRequest = (): HttpRequest => ({
   },
 })
 
-type SutTypes = {
-  sut: CreateArmorerController;
-  emailValidatorStub: EmailValidator;
-};
-
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
       console.log(email)
       return true
     }
   }
+  return new EmailValidatorStub()
+}
 
-  const emailValidatorStub = new EmailValidatorStub()
+type SutTypes = {
+  sut: CreateArmorerController;
+  emailValidatorStub: EmailValidator;
+};
 
+const makeSut = (): SutTypes => {
+  const emailValidatorStub = makeEmailValidator()
   return {
     sut: new CreateArmorerController(emailValidatorStub),
     emailValidatorStub: emailValidatorStub,
