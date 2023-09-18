@@ -3,7 +3,7 @@ import { badRequest } from '../helpers/http-helper'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
-export class CreateArmorerController implements Controller{
+export class CreateArmorerController implements Controller {
   handle(httpRequest: HttpRequest): HttpResponse {
     const requiredFields = ['name', 'email', 'password', 'registration', 'passwordConfirmation']
     for(const field of requiredFields) {
