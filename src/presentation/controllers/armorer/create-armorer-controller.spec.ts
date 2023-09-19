@@ -151,11 +151,12 @@ describe('CreateArmorerController', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  it('should return 200 if all data is valid', async () => {
+  it('should return 201 if all data is valid', async () => {
     const { sut } = makeSut()
     const httpRequest = makeHttpRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(201)
+    expect(typeof httpResponse.body).toBe('object')
   })
 
   it('should call CreateArmorerUseCase with correct values', async () => {

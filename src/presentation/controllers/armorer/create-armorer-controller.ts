@@ -40,18 +40,16 @@ export class CreateArmorerController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-
-      await this.createArmorerUseCase.execute({
+      const armorer = await this.createArmorerUseCase.execute({
         name,
         email,
         password,
         registration,
         phone,
       })
+      return created(armorer)
     } catch (error) {
       return serverError(new ServerError())
     }
-   
-    return created()
   }
 }
