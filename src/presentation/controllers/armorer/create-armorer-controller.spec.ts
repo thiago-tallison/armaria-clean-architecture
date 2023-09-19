@@ -4,7 +4,7 @@ import {
   HttpRequest,
   EmailValidator,
   CreateArmorerUseCase,
-} from '@/presentation/controllers/armorer/create-armorer-protocols'
+} from './create-armorer-protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 
 

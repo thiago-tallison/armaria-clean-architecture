@@ -1,4 +1,3 @@
-import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
 import {
   InvalidParamError,
   ServerError,
@@ -10,7 +9,8 @@ import {
   HttpResponse,
   Controller,
   EmailValidator,
-} from '@/presentation/controllers/armorer/create-armorer-protocols'
+  CreateArmorerUseCase,
+} from './create-armorer-protocols'
 
 export class CreateArmorerController implements Controller {
   constructor(
