@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { CreateArmorerController } from './create-armorer-controller'
-import { HttpRequest, EmailValidator } from '../protocols'
-import { MissingParamError } from '../errors'
-import { InvalidParamError } from '../errors/invalid-params-error'
-import { ServerError } from '../errors/server-error'
+import { HttpRequest, EmailValidator } from '../../protocols'
+import { MissingParamError } from '../../errors'
+import { InvalidParamError } from '../../errors/invalid-params-error'
+import { ServerError } from '../../errors/server-error'
 import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
 
 const makeHttpRequest = (): HttpRequest => ({

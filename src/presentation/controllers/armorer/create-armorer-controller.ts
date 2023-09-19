@@ -1,7 +1,7 @@
 import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
-import { InvalidParamError, ServerError, MissingParamError } from '../errors'
-import { badRequest, serverError, created } from '../helpers/http-helper'
-import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protocols'
+import { InvalidParamError, ServerError, MissingParamError } from '../../errors'
+import { badRequest, serverError, created } from '../../helpers/http-helper'
+import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../../protocols'
 
 export class CreateArmorerController implements Controller {
   constructor(
