@@ -6,7 +6,6 @@ import {
 import { badRequest, serverError, created } from '../../helpers/http-helper'
 import {
   HttpRequest,
-  HttpResponse,
   Controller,
   EmailValidator,
   CreateArmorerUseCase,
@@ -18,7 +17,7 @@ export class CreateArmorerController implements Controller {
     private readonly createArmorerUseCase: CreateArmorerUseCase
   ) {}
 
-  handle(httpRequest: HttpRequest): HttpResponse {
+  async handle(httpRequest: HttpRequest) {
     const requiredFields = [
       'name',
       'email',
@@ -41,16 +40,18 @@ export class CreateArmorerController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
+
+      await this.createArmorerUseCase.execute({
+        name,
+        email,
+        password,
+        registration,
+        phone,
+      })
     } catch (error) {
       return serverError(new ServerError())
     }
-    this.createArmorerUseCase.execute({
-      name,
-      email,
-      password,
-      registration,
-      phone,
-    })
+   
     return created()
   }
 }
