@@ -4,6 +4,7 @@ import { HttpRequest, EmailValidator } from '../protocols'
 import { MissingParamError } from '../errors'
 import { InvalidParamError } from '../errors/invalid-params-error'
 import { ServerError } from '../errors/server-error'
+import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -15,6 +16,15 @@ const makeHttpRequest = (): HttpRequest => ({
     phone: 'any-phone',
   },
 })
+
+const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
+  class CreateArmorerUseCaseStub implements CreateArmorerUseCase {
+    async execute(data: CreateArmorerUseCase.Input): Promise<CreateArmorerUseCase.Output> {
+      return new Promise((resolve) => resolve(data))
+    }
+  }
+  return new CreateArmorerUseCaseStub()
+}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -29,13 +39,19 @@ const makeEmailValidator = (): EmailValidator => {
 type SutTypes = {
   sut: CreateArmorerController;
   emailValidatorStub: EmailValidator;
+  createArmorerUseCaseStub: CreateArmorerUseCase;
 };
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
+  const createArmorerUseCaseStub = makeCreateArmorerUseCase()
   return {
-    sut: new CreateArmorerController(emailValidatorStub),
+    sut: new CreateArmorerController(
+      emailValidatorStub,
+      createArmorerUseCaseStub
+    ),
     emailValidatorStub: emailValidatorStub,
+    createArmorerUseCaseStub,
   }
 }
 
@@ -107,7 +123,7 @@ describe('CreateArmorerController', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
   })
-  
+
   it('should call EmailValidator with correct value', () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValid = vi.spyOn(emailValidatorStub, 'isValid')
@@ -116,7 +132,7 @@ describe('CreateArmorerController', () => {
     expect(isValid).toHaveBeenCalledOnce()
     expect(isValid).toHaveBeenCalledWith(httpRequest.body.email)
   })
-  
+
   it('should return 500 if EmailValidator throws', () => {
     const { sut, emailValidatorStub } = makeSut()
     vi.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
@@ -133,5 +149,21 @@ describe('CreateArmorerController', () => {
     const httpRequest = makeHttpRequest()
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(201)
+  })
+
+  it('should call CreateArmorerUseCase with correct values', () => {
+    const { sut, createArmorerUseCaseStub } = makeSut()
+    const execute = vi.spyOn(createArmorerUseCaseStub, 'execute')
+    const httpRequest = makeHttpRequest()
+    sut.handle(httpRequest)
+    const { name, email, password, registration, phone } = httpRequest.body
+    expect(execute).toHaveBeenCalledOnce()
+    expect(execute).toHaveBeenCalledWith({
+      name,
+      email,
+      password,
+      registration,
+      phone,
+    })
   })
 })
