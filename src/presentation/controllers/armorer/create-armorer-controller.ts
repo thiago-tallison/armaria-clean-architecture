@@ -1,7 +1,16 @@
 import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
-import { InvalidParamError, ServerError, MissingParamError } from '../../errors'
+import {
+  InvalidParamError,
+  ServerError,
+  MissingParamError,
+} from '../../errors'
 import { badRequest, serverError, created } from '../../helpers/http-helper'
-import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../../protocols'
+import {
+  HttpRequest,
+  HttpResponse,
+  Controller,
+  EmailValidator,
+} from '@/presentation/controllers/armorer/create-armorer-protocols'
 
 export class CreateArmorerController implements Controller {
   constructor(
@@ -22,11 +31,10 @@ export class CreateArmorerController implements Controller {
         return badRequest(new MissingParamError(field))
       }
     }
-    const { name, password, passwordConfirmation, email, registration, phone } = httpRequest.body
+    const { name, password, passwordConfirmation, email, registration, phone } =
+      httpRequest.body
     if (password !== passwordConfirmation) {
-      return badRequest(
-        new InvalidParamError('passwordConfirmation')
-      )
+      return badRequest(new InvalidParamError('passwordConfirmation'))
     }
     try {
       const isValid = this.emailValidator.isValid(email)

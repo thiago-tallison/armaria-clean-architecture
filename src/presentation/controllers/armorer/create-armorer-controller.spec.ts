@@ -1,10 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { CreateArmorerController } from './create-armorer-controller'
-import { HttpRequest, EmailValidator } from '../../protocols'
-import { MissingParamError } from '../../errors'
-import { InvalidParamError } from '../../errors/invalid-params-error'
-import { ServerError } from '../../errors/server-error'
-import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
+import {
+  HttpRequest,
+  EmailValidator,
+  CreateArmorerUseCase,
+} from '@/presentation/controllers/armorer/create-armorer-protocols'
+import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -19,7 +21,9 @@ const makeHttpRequest = (): HttpRequest => ({
 
 const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
   class CreateArmorerUseCaseStub implements CreateArmorerUseCase {
-    async execute(data: CreateArmorerUseCase.Input): Promise<CreateArmorerUseCase.Output> {
+    async execute(
+      data: CreateArmorerUseCase.Input
+    ): Promise<CreateArmorerUseCase.Output> {
       return new Promise((resolve) => resolve(data))
     }
   }
