@@ -30,11 +30,21 @@ const makeSut = (): SutType => {
 }
 
 describe('DBCreteArmorer UseCase', () => {
-  it('should call Encryptor with correct password', () => {
+  it('should call Encryptor with correct password', async () => {
     const armorerData = makeArmorerData()
     const { encryptorStub, sut } = makeSut()
     const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
-    sut.create(armorerData)
+    await sut.create(armorerData)
     expect(encryptorSpy).toHaveBeenCalledWith(armorerData.password)
+  })
+
+  it('should throw if Encryptor throws', async () => {
+    const armorerData = makeArmorerData()
+    const { encryptorStub, sut } = makeSut()
+    const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
+    encryptorSpy.mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+    await expect(sut.create(armorerData)).rejects.toThrow()
   })
 })
