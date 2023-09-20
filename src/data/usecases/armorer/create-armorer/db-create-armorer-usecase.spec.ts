@@ -90,4 +90,11 @@ describe('DBCreteArmorer UseCase', () => {
     )
     await expect(() => sut.create(armorerData)).rejects.toThrow(new Error())
   })
+
+  it('should return an Armorer on success', async () => {
+    const armorerData = makeArmorerData()
+    const { sut } = makeSut()
+    const promise = sut.create(armorerData)
+    await expect(promise).resolves.toBeTruthy()
+  })
 })
