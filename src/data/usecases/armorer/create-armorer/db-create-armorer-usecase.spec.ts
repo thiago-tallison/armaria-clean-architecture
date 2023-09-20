@@ -75,6 +75,9 @@ describe('DBCreteArmorer UseCase', () => {
     const encryptorSpy = vi.spyOn(createArmorerRepositoryStub, 'create')
     await sut.create(armorerData)
     expect(encryptorSpy).toHaveBeenCalledOnce()
-    expect(encryptorSpy).toHaveBeenCalledWith(armorerData)
+    expect(encryptorSpy).toHaveBeenCalledWith({
+      ...armorerData,
+      password: `${armorerData.password}_encrypted`,
+    })
   })
 })

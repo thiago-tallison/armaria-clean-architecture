@@ -12,8 +12,11 @@ export class DBCreteArmorerUseCase implements CreateArmorerUseCase {
 
   async create(data: any): Promise<any> {
     const { password } = data
-    await this.encryptor.encrypt(password)
-    await this.createArmorerRepository.create(data)
+    const hashedPassword = await this.encryptor.encrypt(password)
+    await this.createArmorerRepository.create({
+      ...data,
+      password: hashedPassword,
+    })
     await new Promise(resolve => resolve(null))
   }
 }
