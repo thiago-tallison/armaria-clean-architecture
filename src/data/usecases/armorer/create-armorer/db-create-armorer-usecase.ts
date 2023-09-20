@@ -1,5 +1,4 @@
-import { Encryptor } from '@/data/protocols/encryptor'
-import { CreateArmorerUseCase } from '@/domain/usecases/armorer/create-armorer-usecase'
+import { CreateArmorerUseCase, Encryptor } from './ad-create-armorer-protocols'
 
 export class DBCreteArmorerUseCase implements CreateArmorerUseCase {
   constructor(private readonly encryptor: Encryptor) {}
