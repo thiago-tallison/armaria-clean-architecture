@@ -31,7 +31,7 @@ const makeEncryptorStub = () => {
 
 const makeCreateArmorerRepositoryStub = () => {
   class CreateArmorerRepositoryStub implements CreateArmorerRepository {
-    create(data: any): Promise<ArmorerModel> {
+    create(data: ArmorerModel): Promise<ArmorerModel> {
       console.log(data)
       return new Promise(resolve => resolve(null))
     }
