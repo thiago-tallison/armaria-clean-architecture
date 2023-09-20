@@ -1,15 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { CreateArmorerController } from './create-armorer-controller'
 import {
-  HttpRequest,
-  EmailValidator,
   CreateArmorerUseCase,
+  EmailValidator,
+  HttpRequest,
 } from './create-armorer-protocols'
-import {
-  InvalidParamError,
-  MissingParamError,
-  ServerError,
-} from '../../errors'
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -27,7 +23,7 @@ const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
     async execute(
       data: CreateArmorerUseCase.Input
     ): Promise<CreateArmorerUseCase.Output> {
-      return new Promise((resolve) => resolve(data))
+      return new Promise(resolve => resolve(data))
     }
   }
   return new CreateArmorerUseCaseStub()
@@ -36,18 +32,17 @@ const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
-      console.log(email)
-      return true
+      if (email == email) return true
     }
   }
   return new EmailValidatorStub()
 }
 
 type SutTypes = {
-  sut: CreateArmorerController;
-  emailValidatorStub: EmailValidator;
-  createArmorerUseCaseStub: CreateArmorerUseCase;
-};
+  sut: CreateArmorerController
+  emailValidatorStub: EmailValidator
+  createArmorerUseCaseStub: CreateArmorerUseCase
+}
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
@@ -181,7 +176,7 @@ describe('CreateArmorerController', () => {
       throw new Error()
     })
     const httpRequest = makeHttpRequest()
-    const httpResponse =  await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
