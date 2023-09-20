@@ -60,12 +60,14 @@ describe('DBCreteArmorer UseCase', () => {
 
   it('should throw if Encryptor throws', async () => {
     const armorerData = makeArmorerData()
-    const { encryptorStub, sut } = makeSut()
+    const { encryptorStub, sut, createArmorerRepositoryStub } = makeSut()
     const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
+    const repositorySpy = vi.spyOn(createArmorerRepositoryStub, 'create')
     encryptorSpy.mockReturnValueOnce(
       new Promise((_, reject) => reject(new Error()))
     )
-    await expect(sut.create(armorerData)).rejects.toThrow()
+    await expect(() => sut.create(armorerData)).rejects.toThrow()
+    expect(repositorySpy).not.toHaveBeenCalled()
   })
 
   it('should call CreateArmorerRepository with correct values', async () => {
