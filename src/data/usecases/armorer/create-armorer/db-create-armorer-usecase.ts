@@ -28,12 +28,12 @@ export class DBCreteArmorerUseCase implements CreateArmorerUseCase {
     if (armorerByEmailAlreadyExists) {
       throw new Error('Armorer already exists')
     }
-
     const { password } = data
     const hashedPassword = await this.encryptor.encrypt(password)
-    return this.createArmorerRepository.create({
+    const armorer = this.createArmorerRepository.create({
       ...data,
       password: hashedPassword
     })
+    return armorer
   }
 }
