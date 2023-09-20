@@ -1,14 +1,10 @@
+import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { badRequest, created, serverError } from '../../helpers/http-helper'
 import {
-  InvalidParamError,
-  ServerError,
-  MissingParamError,
-} from '../../errors'
-import { badRequest, serverError, created } from '../../helpers/http-helper'
-import {
-  HttpRequest,
   Controller,
-  EmailValidator,
   CreateArmorerUseCase,
+  EmailValidator,
+  HttpRequest,
 } from './create-armorer-protocols'
 
 export class CreateArmorerController implements Controller {
@@ -40,7 +36,7 @@ export class CreateArmorerController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-      const armorer = await this.createArmorerUseCase.execute({
+      const armorer = await this.createArmorerUseCase.create({
         name,
         email,
         password,

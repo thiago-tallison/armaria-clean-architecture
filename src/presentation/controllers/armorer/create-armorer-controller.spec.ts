@@ -20,7 +20,7 @@ const makeHttpRequest = (): HttpRequest => ({
 
 const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
   class CreateArmorerUseCaseStub implements CreateArmorerUseCase {
-    async execute(
+    async create(
       data: CreateArmorerUseCase.Input
     ): Promise<CreateArmorerUseCase.Output> {
       return new Promise(resolve => resolve(data))
@@ -156,7 +156,7 @@ describe('CreateArmorerController', () => {
 
   it('should call CreateArmorerUseCase with correct values', async () => {
     const { sut, createArmorerUseCaseStub } = makeSut()
-    const execute = vi.spyOn(createArmorerUseCaseStub, 'execute')
+    const execute = vi.spyOn(createArmorerUseCaseStub, 'create')
     const httpRequest = makeHttpRequest()
     sut.handle(httpRequest)
     const { name, email, password, registration, phone } = httpRequest.body
@@ -172,7 +172,7 @@ describe('CreateArmorerController', () => {
 
   it('should throw if CreateArmorerUseCase throws', async () => {
     const { sut, createArmorerUseCaseStub } = makeSut()
-    vi.spyOn(createArmorerUseCaseStub, 'execute').mockImplementationOnce(() => {
+    vi.spyOn(createArmorerUseCaseStub, 'create').mockImplementationOnce(() => {
       throw new Error()
     })
     const httpRequest = makeHttpRequest()
