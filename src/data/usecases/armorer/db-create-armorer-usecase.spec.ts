@@ -1,6 +1,6 @@
 import { Encryptor } from '@/data/protocols/encryptor'
 import { describe, expect, it, vi } from 'vitest'
-import { DBCreteArmorerUseCase } from './db-create-armorer-use-case'
+import { DBCreteArmorerUseCase } from './db-create-armorer-usecase'
 
 type SutType = {
   sut: DBCreteArmorerUseCase
