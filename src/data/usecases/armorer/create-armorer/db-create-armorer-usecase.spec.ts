@@ -1,15 +1,19 @@
 import { ArmorerModel } from '@/domain/models/armorer'
 import { describe, expect, it, vi } from 'vitest'
 import {
+  CheckArmorerRepository,
   CreateArmorerRepository,
   Encryptor,
 } from './ad-create-armorer-protocols'
 import { DBCreteArmorerUseCase } from './db-create-armorer-usecase'
 
-type SutType = {
-  sut: DBCreteArmorerUseCase
-  encryptorStub: Encryptor
-  createArmorerRepositoryStub: CreateArmorerRepository
+const makeCheckArmorerRepositoryStub = () => {
+  class CheckArmorerRepositoryStub implements CheckArmorerRepository {
+    check(_: string): Promise<boolean> {
+      return new Promise(resolve => resolve(false))
+    }
+  }
+  return new CheckArmorerRepositoryStub()
 }
 
 const makeArmorerData = () => ({
@@ -38,14 +42,28 @@ const makeCreateArmorerRepositoryStub = () => {
   return new CreateArmorerRepositoryStub()
 }
 
+type SutType = {
+  sut: DBCreteArmorerUseCase
+  encryptorStub: Encryptor
+  createArmorerRepositoryStub: CreateArmorerRepository
+  checkArmorerRepositoryStub: CheckArmorerRepository
+}
+
 const makeSut = (): SutType => {
+  const checkArmorerRepositoryStub = makeCheckArmorerRepositoryStub()
   const encryptorStub = makeEncryptorStub()
   const createArmorerRepositoryStub = makeCreateArmorerRepositoryStub()
   const sut = new DBCreteArmorerUseCase(
     encryptorStub,
-    createArmorerRepositoryStub
+    createArmorerRepositoryStub,
+    checkArmorerRepositoryStub
   )
-  return { sut, encryptorStub, createArmorerRepositoryStub }
+  return {
+    sut,
+    encryptorStub,
+    createArmorerRepositoryStub,
+    checkArmorerRepositoryStub,
+  }
 }
 
 describe('DBCreteArmorer UseCase', () => {
@@ -89,6 +107,15 @@ describe('DBCreteArmorer UseCase', () => {
       new Promise((_, reject) => reject(new Error()))
     )
     await expect(() => sut.create(armorerData)).rejects.toThrow(new Error())
+  })
+
+  it('should not be able to create an Armorer with an existent registration', async () => {
+    const armorerData = makeArmorerData()
+    const { sut, checkArmorerRepositoryStub } = makeSut()
+    vi.spyOn(checkArmorerRepositoryStub, 'check').mockReturnValueOnce(
+      new Promise(resolve => resolve(true))
+    )
+    await expect(() => sut.create(armorerData)).rejects.toThrow()
   })
 
   it('should return an Armorer on success', async () => {
