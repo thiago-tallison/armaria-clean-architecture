@@ -4,7 +4,7 @@ import {
   Controller,
   CreateArmorerUseCase,
   EmailValidator,
-  HttpRequest,
+  HttpRequest
 } from './create-armorer-protocols'
 
 export class CreateArmorerController implements Controller {
@@ -19,7 +19,7 @@ export class CreateArmorerController implements Controller {
       'email',
       'password',
       'registration',
-      'passwordConfirmation',
+      'passwordConfirmation'
     ]
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
@@ -41,7 +41,7 @@ export class CreateArmorerController implements Controller {
         email,
         password,
         registration,
-        phone,
+        phone
       })
       return created(armorer)
     } catch (error) {

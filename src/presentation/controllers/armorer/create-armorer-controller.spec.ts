@@ -4,7 +4,7 @@ import { CreateArmorerController } from './create-armorer-controller'
 import {
   CreateArmorerUseCase,
   EmailValidator,
-  HttpRequest,
+  HttpRequest
 } from './create-armorer-protocols'
 
 const makeHttpRequest = (): HttpRequest => ({
@@ -14,8 +14,8 @@ const makeHttpRequest = (): HttpRequest => ({
     email: 'any-email@mail.com',
     password: 'any-password',
     passwordConfirmation: 'any-password',
-    phone: 'any-phone',
-  },
+    phone: 'any-phone'
+  }
 })
 
 const makeCreateArmorerUseCase = (): CreateArmorerUseCase => {
@@ -53,7 +53,7 @@ const makeSut = (): SutTypes => {
       createArmorerUseCaseStub
     ),
     emailValidatorStub: emailValidatorStub,
-    createArmorerUseCaseStub,
+    createArmorerUseCaseStub
   }
 }
 
@@ -166,7 +166,7 @@ describe('CreateArmorerController', () => {
       email,
       password,
       registration,
-      phone,
+      phone
     })
   })
 

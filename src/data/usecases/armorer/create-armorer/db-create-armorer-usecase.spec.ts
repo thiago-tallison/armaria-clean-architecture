@@ -1,9 +1,10 @@
 import { ArmorerModel } from '@/domain/models/armorer'
 import { describe, expect, it, vi } from 'vitest'
 import {
+  CheckArmorerByEmailRepository,
   CheckArmorerRepository,
   CreateArmorerRepository,
-  Encryptor,
+  Encryptor
 } from './ad-create-armorer-protocols'
 import { DBCreteArmorerUseCase } from './db-create-armorer-usecase'
 
@@ -21,7 +22,7 @@ const makeArmorerData = () => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password',
-  phone: 'any_phone_number',
+  phone: 'any_phone_number'
 })
 
 const makeEncryptorStub = () => {
@@ -42,27 +43,43 @@ const makeCreateArmorerRepositoryStub = () => {
   return new CreateArmorerRepositoryStub()
 }
 
+const makeCheckArmorerByEmailRepositoryStub = () => {
+  class CheckArmorerByEmailRepositoryStub
+    implements CheckArmorerByEmailRepository
+  {
+    check(_: string): Promise<boolean> {
+      return new Promise(resolve => resolve(false))
+    }
+  }
+  return new CheckArmorerByEmailRepositoryStub()
+}
+
 type SutType = {
   sut: DBCreteArmorerUseCase
   encryptorStub: Encryptor
   createArmorerRepositoryStub: CreateArmorerRepository
   checkArmorerRepositoryStub: CheckArmorerRepository
+  checkArmorerByEmailRepositoryStub: CheckArmorerByEmailRepository
 }
 
 const makeSut = (): SutType => {
   const checkArmorerRepositoryStub = makeCheckArmorerRepositoryStub()
+  const checkArmorerByEmailRepositoryStub =
+    makeCheckArmorerByEmailRepositoryStub()
   const encryptorStub = makeEncryptorStub()
   const createArmorerRepositoryStub = makeCreateArmorerRepositoryStub()
   const sut = new DBCreteArmorerUseCase(
     encryptorStub,
     createArmorerRepositoryStub,
-    checkArmorerRepositoryStub
+    checkArmorerRepositoryStub,
+    checkArmorerByEmailRepositoryStub
   )
   return {
     sut,
     encryptorStub,
     createArmorerRepositoryStub,
     checkArmorerRepositoryStub,
+    checkArmorerByEmailRepositoryStub
   }
 }
 
@@ -96,7 +113,7 @@ describe('DBCreteArmorer UseCase', () => {
     expect(encryptorSpy).toHaveBeenCalledOnce()
     expect(encryptorSpy).toHaveBeenCalledWith({
       ...armorerData,
-      password: `${armorerData.password}_encrypted`,
+      password: `${armorerData.password}_encrypted`
     })
   })
 
@@ -113,6 +130,15 @@ describe('DBCreteArmorer UseCase', () => {
     const armorerData = makeArmorerData()
     const { sut, checkArmorerRepositoryStub } = makeSut()
     vi.spyOn(checkArmorerRepositoryStub, 'check').mockReturnValueOnce(
+      new Promise(resolve => resolve(true))
+    )
+    await expect(() => sut.create(armorerData)).rejects.toThrow()
+  })
+
+  it('should not be able to create an Armorer with an existent email', async () => {
+    const armorerData = makeArmorerData()
+    const { sut, checkArmorerByEmailRepositoryStub } = makeSut()
+    vi.spyOn(checkArmorerByEmailRepositoryStub, 'check').mockReturnValueOnce(
       new Promise(resolve => resolve(true))
     )
     await expect(() => sut.create(armorerData)).rejects.toThrow()

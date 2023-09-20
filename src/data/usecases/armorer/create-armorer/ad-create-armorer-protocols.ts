@@ -1,3 +1,4 @@
+export * from '@/data/protocols/check-armorer-by-email-repository'
 export * from '@/data/protocols/check-armorer-repository'
 export * from '@/data/protocols/create-armorer-repository'
 export * from '@/data/protocols/encryptor'
