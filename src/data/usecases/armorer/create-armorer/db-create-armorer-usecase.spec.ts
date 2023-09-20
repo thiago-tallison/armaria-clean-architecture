@@ -1,10 +1,15 @@
+import { ArmorerModel } from '@/domain/models/armorer'
 import { describe, expect, it, vi } from 'vitest'
-import { Encryptor } from './ad-create-armorer-protocols'
+import {
+  CreateArmorerRepository,
+  Encryptor,
+} from './ad-create-armorer-protocols'
 import { DBCreteArmorerUseCase } from './db-create-armorer-usecase'
 
 type SutType = {
   sut: DBCreteArmorerUseCase
   encryptorStub: Encryptor
+  createArmorerRepositoryStub: CreateArmorerRepository
 }
 
 const makeArmorerData = () => ({
@@ -15,18 +20,33 @@ const makeArmorerData = () => ({
   phone: 'any_phone_number',
 })
 
-const makeSut = (): SutType => {
+const makeEncryptorStub = () => {
   class EncryptorStub implements Encryptor {
     async encrypt(value: string): Promise<string> {
       return new Promise(resolve => resolve(`${value}_encrypted`))
     }
   }
+  return new EncryptorStub()
+}
 
-  const encryptorStub = new EncryptorStub()
+const makeCreateArmorerRepositoryStub = () => {
+  class CreateArmorerRepositoryStub implements CreateArmorerRepository {
+    create(data: any): Promise<ArmorerModel> {
+      console.log(data)
+      return new Promise(resolve => resolve(null))
+    }
+  }
+  return new CreateArmorerRepositoryStub()
+}
 
-  const sut = new DBCreteArmorerUseCase(encryptorStub)
-
-  return { sut, encryptorStub }
+const makeSut = (): SutType => {
+  const encryptorStub = makeEncryptorStub()
+  const createArmorerRepositoryStub = makeCreateArmorerRepositoryStub()
+  const sut = new DBCreteArmorerUseCase(
+    encryptorStub,
+    createArmorerRepositoryStub
+  )
+  return { sut, encryptorStub, createArmorerRepositoryStub }
 }
 
 describe('DBCreteArmorer UseCase', () => {
@@ -47,5 +67,14 @@ describe('DBCreteArmorer UseCase', () => {
       new Promise((_, reject) => reject(new Error()))
     )
     await expect(sut.create(armorerData)).rejects.toThrow()
+  })
+
+  it('should call CreateArmorerRepository with correct values', async () => {
+    const armorerData = makeArmorerData()
+    const { sut, createArmorerRepositoryStub } = makeSut()
+    const encryptorSpy = vi.spyOn(createArmorerRepositoryStub, 'create')
+    await sut.create(armorerData)
+    expect(encryptorSpy).toHaveBeenCalledOnce()
+    expect(encryptorSpy).toHaveBeenCalledWith(armorerData)
   })
 })
