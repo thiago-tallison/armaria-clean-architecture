@@ -28,11 +28,12 @@
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-namespace": "off",
         "import/export": "off",
-        "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
-            "warn",
+            "warn", // or "error"
             {
-                "varsIgnorePattern": "^_"
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
             }
         ]
     }
