@@ -79,4 +79,13 @@ describe('DBCreteArmorer UseCase', () => {
       password: `${armorerData.password}_encrypted`,
     })
   })
+
+  it('should throws if CreateArmorerRepository throws', async () => {
+    const armorerData = makeArmorerData()
+    const { sut, createArmorerRepositoryStub } = makeSut()
+    vi.spyOn(createArmorerRepositoryStub, 'create').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+    await expect(() => sut.create(armorerData)).rejects.toThrow(new Error())
+  })
 })
