@@ -34,7 +34,7 @@ describe('DBCreteArmorer UseCase', () => {
     const armorerData = makeArmorerData()
     const { encryptorStub, sut } = makeSut()
     const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
-    sut.create(armorerData)
+    sut.execute(armorerData)
     expect(encryptorSpy).toHaveBeenCalledWith(armorerData.password)
   })
 })
