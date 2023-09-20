@@ -5,12 +5,6 @@ export interface CreateArmorerUseCase {
 }
 
 export namespace CreateArmorerUseCase {
-  export type Input = {
-    registration: string
-    name: string
-    email: string
-    password: string
-    phone?: string
-  }
-  export type Output = Promise<ArmorerModel>
+  export type Input = ArmorerModel
+  export type Output = ArmorerModel
 }
