@@ -14,21 +14,28 @@ export class DBCreteMunicipalGuardUseCase
     private readonly checkMunicipalGuardByEmailRepository: CheckMunicipalGuardByEmailRepository
   ) {}
 
-  async create(
-    data: CreateMunicipalGuardUseCase.Input
-  ): Promise<CreateMunicipalGuardUseCase.Output> {
-    const guardAlreadyExists = await this.checkMunicipalGuardRepository.check(
-      data.registration
-    )
+  async create({
+    email,
+    name,
+    registration,
+    phone
+  }: CreateMunicipalGuardUseCase.Input) {
+    const guardAlreadyExists =
+      await this.checkMunicipalGuardRepository.check(registration)
     if (guardAlreadyExists) {
       throw new Error('Guard municipal já cadastrado')
     }
     const guardByEmailAlreadyExists =
-      await this.checkMunicipalGuardByEmailRepository.check(data.email)
+      await this.checkMunicipalGuardByEmailRepository.check(email)
     if (guardByEmailAlreadyExists) {
       throw new Error('Guard municipal já cadastrado')
     }
-    const guard = this.createMunicipalGuardRepository.create(data)
+    const guard = await this.createMunicipalGuardRepository.create({
+      email,
+      name,
+      registration,
+      phone
+    })
     return guard
   }
 }
