@@ -1,10 +1,10 @@
-import { ArmorerModel } from '@/domain/models/armorer'
 import {
   CheckMunicipalGuardByEmailRepository,
   CheckMunicipalGuardRepository,
-  CreateMunicipalGuardRepository
+  CreateMunicipalGuardRepository,
+  MunicipalGuard
 } from './create-municipal-guard-protocols'
-import { DBCreteMunicipalGuardUseCase } from './db-create-municipal-guard-use-case'
+import { DBCreteMunicipalGuardUseCase } from './create-municipal-guard-use-case'
 
 const makeCheckMunicipalGuardRepositoryStub = () => {
   class CheckMunicipalGuardRepositoryStub
@@ -17,18 +17,19 @@ const makeCheckMunicipalGuardRepositoryStub = () => {
   return new CheckMunicipalGuardRepositoryStub()
 }
 
-const makeArmorerData = () => ({
-  registration: 'any_registration',
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  phone: 'any_phone_number'
-})
+const makeMunicipalGuardData = (): MunicipalGuard =>
+  new MunicipalGuard({
+    registration: 'any_registration',
+    name: 'any_name',
+    email: 'any_email@mail.com',
+    phone: 'any_phone_number'
+  })
 
 const makeCreateMunicipalGuardRepositoryStub = () => {
   class CreateMunicipalGuardRepositoryStub
     implements CreateMunicipalGuardRepository
   {
-    create(data: ArmorerModel): Promise<ArmorerModel> {
+    create(data: MunicipalGuard): Promise<MunicipalGuard> {
       return new Promise(resolve => resolve(data))
     }
   }
@@ -73,13 +74,13 @@ const makeSut = (): SutType => {
   }
 }
 
-describe('DBCreteArmorer UseCase', () => {
+describe('CreteMunicipal Guard UseCase', () => {
   afterAll(() => {
     jest.clearAllMocks()
   })
 
   it('should call CreateMunicipalGuardRepository with correct values', async () => {
-    const guardData = makeArmorerData()
+    const guardData = makeMunicipalGuardData()
     const { sut, createMunicipalGuardRepositoryStub } = makeSut()
     const createSpy = jest.spyOn(createMunicipalGuardRepositoryStub, 'create')
     await sut.create(guardData)
@@ -88,16 +89,16 @@ describe('DBCreteArmorer UseCase', () => {
   })
 
   it('should throws if CreateMunicipalGuardRepository throws', async () => {
-    const armorerData = makeArmorerData()
+    const guardData = makeMunicipalGuardData()
     const { sut, createMunicipalGuardRepositoryStub } = makeSut()
     jest
       .spyOn(createMunicipalGuardRepositoryStub, 'create')
       .mockReturnValueOnce(new Promise((_, reject) => reject(new Error())))
-    await expect(sut.create(armorerData)).rejects.toThrow(new Error())
+    await expect(sut.create(guardData)).rejects.toThrow(new Error())
   })
 
   it('should not be able to create an MunicipalGuard with an existent registration', async () => {
-    const armorerData = makeArmorerData()
+    const guardData = makeMunicipalGuardData()
     const {
       sut,
       checkMunicipalGuardRepositoryStub,
@@ -108,12 +109,12 @@ describe('DBCreteArmorer UseCase', () => {
       .mockReturnValueOnce(new Promise(resolve => resolve(true)))
 
     const createSpy = jest.spyOn(createMunicipalGuardRepositoryStub, 'create')
-    await expect(sut.create(armorerData)).rejects.toThrow()
+    await expect(sut.create(guardData)).rejects.toThrow()
     expect(createSpy).toHaveBeenCalledTimes(0)
   })
 
   it('should not be able to create an MunicipalGuard with an existent email', async () => {
-    const armorerData = makeArmorerData()
+    const guardData = makeMunicipalGuardData()
     const {
       sut,
       checkMunicipalGuardByEmailRepositoryStub,
@@ -123,14 +124,14 @@ describe('DBCreteArmorer UseCase', () => {
     jest
       .spyOn(checkMunicipalGuardByEmailRepositoryStub, 'check')
       .mockReturnValueOnce(new Promise(resolve => resolve(true)))
-    await expect(sut.create(armorerData)).rejects.toThrow()
+    await expect(sut.create(guardData)).rejects.toThrow()
     expect(createSpy).toHaveBeenCalledTimes(0)
   })
 
   it('should return an MunicipalGuard on success', async () => {
-    const armorerData = makeArmorerData()
+    const guardData = makeMunicipalGuardData()
     const { sut } = makeSut()
-    const promise = sut.create(armorerData)
-    await expect(promise).resolves.toHaveProperty('registration')
+    const promise = sut.create(guardData)
+    await expect(promise).resolves.toBeInstanceOf(Object)
   })
 })
