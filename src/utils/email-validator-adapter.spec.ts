@@ -1,12 +1,15 @@
-import { describe, expect, it, vi } from 'vitest'
 import { emailSchema } from './email-schema'
 import { EmailValidatorAdapter } from './email-validator-adapter'
 
-vi.mock('./email-schema')
+jest.mock('./email-schema')
 
 describe('EmailValidator Adapter', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should return false if validator returns false', () => {
-    vi.spyOn(emailSchema, 'parse').mockImplementationOnce(() => {
+    jest.spyOn(emailSchema, 'parse').mockImplementationOnce(() => {
       throw new Error()
     })
 
@@ -22,7 +25,7 @@ describe('EmailValidator Adapter', () => {
   })
 
   it('ensure EmailValidatorAdapter.isValid is called with correct email', () => {
-    const parseSpy = vi.spyOn(emailSchema, 'parse')
+    const parseSpy = jest.spyOn(emailSchema, 'parse')
     const sut = new EmailValidatorAdapter()
     const email = 'any_email@mail.com'
     sut.isValid(email)

@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from 'vitest'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { CreateArmorerController } from './create-armorer-controller'
 import {
@@ -120,7 +119,7 @@ describe('CreateArmorerController', () => {
     const { sut, emailValidatorStub } = makeSut()
     const httpRequest = makeHttpRequest()
     httpRequest.body.email = 'invalid-email'
-    vi.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
@@ -128,16 +127,16 @@ describe('CreateArmorerController', () => {
 
   it('should call EmailValidator with correct value', async () => {
     const { sut, emailValidatorStub } = makeSut()
-    const isValid = vi.spyOn(emailValidatorStub, 'isValid')
+    const isValid = jest.spyOn(emailValidatorStub, 'isValid')
     const httpRequest = makeHttpRequest()
     sut.handle(httpRequest)
-    expect(isValid).toHaveBeenCalledOnce()
+    expect(isValid).toHaveBeenCalledTimes(1)
     expect(isValid).toHaveBeenCalledWith(httpRequest.body.email)
   })
 
   it('should return 500 if EmailValidator throws', async () => {
     const { sut, emailValidatorStub } = makeSut()
-    vi.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new Error()
     })
     const httpRequest = makeHttpRequest()
@@ -156,11 +155,11 @@ describe('CreateArmorerController', () => {
 
   it('should call CreateArmorerUseCase with correct values', async () => {
     const { sut, createArmorerUseCaseStub } = makeSut()
-    const execute = vi.spyOn(createArmorerUseCaseStub, 'create')
+    const execute = jest.spyOn(createArmorerUseCaseStub, 'create')
     const httpRequest = makeHttpRequest()
     sut.handle(httpRequest)
     const { name, email, password, registration, phone } = httpRequest.body
-    expect(execute).toHaveBeenCalledOnce()
+    expect(execute).toHaveBeenCalledTimes(1)
     expect(execute).toHaveBeenCalledWith({
       name,
       email,
@@ -172,9 +171,11 @@ describe('CreateArmorerController', () => {
 
   it('should throw if CreateArmorerUseCase throws', async () => {
     const { sut, createArmorerUseCaseStub } = makeSut()
-    vi.spyOn(createArmorerUseCaseStub, 'create').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    jest
+      .spyOn(createArmorerUseCaseStub, 'create')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
     const httpRequest = makeHttpRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)

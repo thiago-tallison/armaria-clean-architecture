@@ -1,5 +1,5 @@
 import { ArmorerModel } from '@/domain/models/armorer'
-import { describe, expect, it, vi } from 'vitest'
+
 import {
   CheckArmorerByEmailRepository,
   CheckArmorerRepository,
@@ -87,17 +87,17 @@ describe('DBCreteArmorer UseCase', () => {
   it('should call Encryptor with correct password', async () => {
     const armorerData = makeArmorerData()
     const { encryptorStub, sut } = makeSut()
-    const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
+    const encryptorSpy = jest.spyOn(encryptorStub, 'encrypt')
     await sut.create(armorerData)
-    expect(encryptorSpy).toHaveBeenCalledOnce()
+    expect(encryptorSpy).toHaveBeenCalledTimes(1)
     expect(encryptorSpy).toHaveBeenCalledWith(armorerData.password)
   })
 
   it('should throw if Encryptor throws', async () => {
     const armorerData = makeArmorerData()
     const { encryptorStub, sut, createArmorerRepositoryStub } = makeSut()
-    const encryptorSpy = vi.spyOn(encryptorStub, 'encrypt')
-    const repositorySpy = vi.spyOn(createArmorerRepositoryStub, 'create')
+    const encryptorSpy = jest.spyOn(encryptorStub, 'encrypt')
+    const repositorySpy = jest.spyOn(createArmorerRepositoryStub, 'create')
     encryptorSpy.mockReturnValueOnce(
       new Promise((_, reject) => reject(new Error()))
     )
@@ -108,9 +108,9 @@ describe('DBCreteArmorer UseCase', () => {
   it('should call CreateArmorerRepository with correct values', async () => {
     const armorerData = makeArmorerData()
     const { sut, createArmorerRepositoryStub } = makeSut()
-    const encryptorSpy = vi.spyOn(createArmorerRepositoryStub, 'create')
+    const encryptorSpy = jest.spyOn(createArmorerRepositoryStub, 'create')
     await sut.create(armorerData)
-    expect(encryptorSpy).toHaveBeenCalledOnce()
+    expect(encryptorSpy).toHaveBeenCalledTimes(1)
     expect(encryptorSpy).toHaveBeenCalledWith({
       ...armorerData,
       password: `${armorerData.password}_encrypted`
@@ -120,27 +120,27 @@ describe('DBCreteArmorer UseCase', () => {
   it('should throws if CreateArmorerRepository throws', async () => {
     const armorerData = makeArmorerData()
     const { sut, createArmorerRepositoryStub } = makeSut()
-    vi.spyOn(createArmorerRepositoryStub, 'create').mockReturnValueOnce(
-      new Promise((_, reject) => reject(new Error()))
-    )
+    jest
+      .spyOn(createArmorerRepositoryStub, 'create')
+      .mockReturnValueOnce(new Promise((_, reject) => reject(new Error())))
     await expect(() => sut.create(armorerData)).rejects.toThrow(new Error())
   })
 
   it('should not be able to create an Armorer with an existent registration', async () => {
     const armorerData = makeArmorerData()
     const { sut, checkArmorerRepositoryStub } = makeSut()
-    vi.spyOn(checkArmorerRepositoryStub, 'check').mockReturnValueOnce(
-      new Promise(resolve => resolve(true))
-    )
+    jest
+      .spyOn(checkArmorerRepositoryStub, 'check')
+      .mockReturnValueOnce(new Promise(resolve => resolve(true)))
     await expect(() => sut.create(armorerData)).rejects.toThrow()
   })
 
   it('should not be able to create an Armorer with an existent email', async () => {
     const armorerData = makeArmorerData()
     const { sut, checkArmorerByEmailRepositoryStub } = makeSut()
-    vi.spyOn(checkArmorerByEmailRepositoryStub, 'check').mockReturnValueOnce(
-      new Promise(resolve => resolve(true))
-    )
+    jest
+      .spyOn(checkArmorerByEmailRepositoryStub, 'check')
+      .mockReturnValueOnce(new Promise(resolve => resolve(true)))
     await expect(() => sut.create(armorerData)).rejects.toThrow()
   })
 
