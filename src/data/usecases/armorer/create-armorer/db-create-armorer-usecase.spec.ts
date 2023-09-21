@@ -101,7 +101,7 @@ describe('DBCreteArmorer UseCase', () => {
     encryptorSpy.mockReturnValueOnce(
       new Promise((_, reject) => reject(new Error()))
     )
-    await expect(() => sut.create(armorerData)).rejects.toThrow()
+    await expect(sut.create(armorerData)).rejects.toThrow()
     expect(repositorySpy).not.toHaveBeenCalled()
   })
 
@@ -123,7 +123,7 @@ describe('DBCreteArmorer UseCase', () => {
     jest
       .spyOn(createArmorerRepositoryStub, 'create')
       .mockReturnValueOnce(new Promise((_, reject) => reject(new Error())))
-    await expect(() => sut.create(armorerData)).rejects.toThrow(new Error())
+    await expect(sut.create(armorerData)).rejects.toThrow(new Error())
   })
 
   it('should not be able to create an Armorer with an existent registration', async () => {
@@ -132,7 +132,7 @@ describe('DBCreteArmorer UseCase', () => {
     jest
       .spyOn(checkArmorerRepositoryStub, 'check')
       .mockReturnValueOnce(new Promise(resolve => resolve(true)))
-    await expect(() => sut.create(armorerData)).rejects.toThrow()
+    await expect(sut.create(armorerData)).rejects.toThrow()
   })
 
   it('should not be able to create an Armorer with an existent email', async () => {
@@ -141,7 +141,7 @@ describe('DBCreteArmorer UseCase', () => {
     jest
       .spyOn(checkArmorerByEmailRepositoryStub, 'check')
       .mockReturnValueOnce(new Promise(resolve => resolve(true)))
-    await expect(() => sut.create(armorerData)).rejects.toThrow()
+    await expect(sut.create(armorerData)).rejects.toThrow()
   })
 
   it('should return an Armorer on success', async () => {
